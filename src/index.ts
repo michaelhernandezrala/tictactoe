@@ -1,5 +1,6 @@
 import { select } from '@inquirer/prompts';
 
+import TicTacToe from './game/TicTacToe';
 import difficulty from './menus/difficulty';
 import game from './menus/game';
 import main from './menus/main';
@@ -11,6 +12,8 @@ async function showGameMenu() {
 
   switch (option) {
     case 'human':
+      const tictactoe = new TicTacToe();
+      tictactoe.play();
       break;
     case 'machine':
       break;
