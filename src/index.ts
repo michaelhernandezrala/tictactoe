@@ -13,7 +13,7 @@ async function showGameMenu() {
   switch (option) {
     case 'human':
       const tictactoe = new TicTacToe();
-      tictactoe.play();
+      await tictactoe.play();
       break;
     case 'machine':
       break;
