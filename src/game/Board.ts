@@ -27,7 +27,7 @@ class Board {
       }
     }
 
-    return tokenCount === 6;
+    return tokenCount === 9;
   }
 
   public async put(turn: number): Promise<void> {
