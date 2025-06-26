@@ -1,16 +1,12 @@
-import { input } from '@inquirer/prompts';
-import Token from './Token';
-
 class Board {
-  private tokens: Token[][] = [];
-  private static COLOR: string[] = ['X', 'O'];
+  private tokens: string[][] = [];
 
   public constructor() {
     this.initializeBoard();
   }
 
   private initializeBoard(): void {
-    this.tokens = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => new Token('_')));
+    this.tokens = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => '_'));
   }
 
   public isComplete(): boolean {
@@ -18,8 +14,8 @@ class Board {
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        const tokenValue = this.tokens[i]![j]!.getValue();
-        const emptyTokenValue = new Token('_').getValue();
+        const tokenValue = this.tokens[i]![j];
+        const emptyTokenValue = '_';
 
         if (tokenValue !== emptyTokenValue) {
           tokenCount++;
@@ -30,21 +26,6 @@ class Board {
     return tokenCount === 9;
   }
 
-  public async put(turn: number): Promise<void> {
-    let position;
-    let ok;
-
-    do {
-      position = await this.askPosition(turn);
-      ok = this.isEmpty(position);
-      if (!ok) {
-        console.log('Oops! That spot is taken. Try another position.');
-      }
-    } while (!ok);
-
-    this.placeToken(turn, position);
-  }
-
   public write(): void {
     let counter = 1;
 
@@ -53,7 +34,7 @@ class Board {
     for (let i = 0; i < 3; i++) {
       let row = '|';
       for (let j = 0; j < 3; j++) {
-        const value = this.tokens[i]![j]!.getValue();
+        const value = this.tokens[i]![j]!;
         const display = value === '_' ? counter.toString() : value;
         row += ` ${display} |`;
         counter++;
@@ -69,28 +50,12 @@ class Board {
     console.log('└───┴───┴───┘');
   }
 
-  private async askPosition(turn: number): Promise<number> {
-    const position = await input({
-      message: `🎯 Player ${Board.COLOR[turn]}, choose a position (1-9):`,
-      validate: value => {
-        const parsedValue = Number.parseInt(value);
-
-        if (Number.isNaN(parsedValue) || parsedValue < 0 || parsedValue > 9) {
-          return 'Please enter a number from 1 to 9';
-        }
-        return true;
-      },
-    });
-
-    return Number.parseInt(position);
-  }
-
-  private isEmpty(position: number): boolean {
+  public isEmpty(position: number): boolean {
     let counter = 1;
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        const value = this.tokens[i]![j]!.getValue();
+        const value = this.tokens[i]![j]!;
         if (position === counter && value === '_') {
           return true;
         }
@@ -101,13 +66,13 @@ class Board {
     return false;
   }
 
-  private placeToken(turn: number, position: number): void {
+  public placeToken(color: string, position: number): void {
     let counter = 1;
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (position === counter) {
-          this.tokens[i]![j]! = new Token(Board.COLOR[turn]!);
+          this.tokens[i]![j]! = color;
         }
         counter++;
       }
@@ -120,8 +85,8 @@ class Board {
 
   private isHorizontal(): boolean {
     for (let i = 0; i < 3; i++) {
-      const token = this.tokens[i]![0]!.getValue();
-      if (token !== '_' && token === this.tokens[i]![1]!.getValue() && token === this.tokens[i]![2]!.getValue()) {
+      const token = this.tokens[i]![0]!;
+      if (token !== '_' && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
         return true;
       }
     }
@@ -130,8 +95,8 @@ class Board {
 
   private isVertical(): boolean {
     for (let i = 0; i < 3; i++) {
-      const token = this.tokens[0]![i]!.getValue();
-      if (token !== '_' && token === this.tokens[1]![i]!.getValue() && token === this.tokens[2]![i]!.getValue()) {
+      const token = this.tokens[0]![i]!;
+      if (token !== '_' && token === this.tokens[1]![i]! && token === this.tokens[2]![i]!) {
         return true;
       }
     }
@@ -139,8 +104,8 @@ class Board {
   }
 
   private isDiagonal(): boolean {
-    const center = this.tokens[1]![1]!.getValue();
-    if (center !== '_' && center === this.tokens[0]![0]!.getValue() && center === this.tokens[2]![2]!.getValue()) {
+    const center = this.tokens[1]![1]!;
+    if (center !== '_' && center === this.tokens[0]![0]! && center === this.tokens[2]![2]!) {
       return true;
     }
 
@@ -148,8 +113,8 @@ class Board {
   }
 
   private isInverse(): boolean {
-    const center = this.tokens[1]![1]!.getValue();
-    if (center !== '_' && center === this.tokens[0]![2]!.getValue() && center === this.tokens[2]![0]!.getValue()) {
+    const center = this.tokens[1]![1]!;
+    if (center !== '_' && center === this.tokens[0]![2]! && center === this.tokens[2]![0]!) {
       return true;
     }
 
@@ -162,24 +127,24 @@ class Board {
     }
 
     for (let i = 0; i < 3; i++) {
-      const token = this.tokens[i]![0]!.getValue();
-      if (token !== '_' && token === this.tokens[i]![1]!.getValue() && token === this.tokens[i]![2]!.getValue()) {
+      const token = this.tokens[i]![0]!;
+      if (token !== '_' && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
         return token;
       }
     }
 
     for (let j = 0; j < 3; j++) {
-      const token = this.tokens[0]![j]!.getValue();
-      if (token !== '_' && token === this.tokens[1]![j]!.getValue() && token === this.tokens[2]![j]!.getValue()) {
+      const token = this.tokens[0]![j]!;
+      if (token !== '_' && token === this.tokens[1]![j]! && token === this.tokens[2]![j]!) {
         return token;
       }
     }
 
-    const center = this.tokens[1]![1]!.getValue();
+    const center = this.tokens[1]![1]!;
     if (center !== '_') {
       if (
-        (center === this.tokens[0]![0]!.getValue() && center === this.tokens[2]![2]!.getValue()) ||
-        (center === this.tokens[0]![2]!.getValue() && center === this.tokens[2]![0]!.getValue())
+        (center === this.tokens[0]![0]! && center === this.tokens[2]![2]!) ||
+        (center === this.tokens[0]![2]! && center === this.tokens[2]![0]!)
       ) {
         return center;
       }
