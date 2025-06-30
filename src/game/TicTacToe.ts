@@ -5,11 +5,12 @@ class TicTacToe {
   private board: Board;
   private turn: number;
   private players: Player[] = [];
+  private static readonly NUM_PLAYERS = 2;
 
   public constructor() {
     this.board = new Board();
     this.turn = 0;
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < TicTacToe.NUM_PLAYERS; i++) {
       this.players[i] = new Player(i);
     }
   }
@@ -18,7 +19,7 @@ class TicTacToe {
     do {
       this.board.write();
       await this.players[this.turn]?.put(this.board);
-      this.turn = (this.turn + 1) % 2;
+      this.turn = (this.turn + 1) % TicTacToe.NUM_PLAYERS;
     } while (!this.board.isTicTacToe() && !this.board.isComplete());
 
     this.board.write();

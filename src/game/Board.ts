@@ -1,21 +1,26 @@
+import Color from './Color';
+
 class Board {
-  private tokens: string[][] = [];
+  public static readonly DIMENSION = 3;
+  private tokens: Color[][] = [];
 
   public constructor() {
     this.initializeBoard();
   }
 
   private initializeBoard(): void {
-    this.tokens = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => '_'));
+    this.tokens = Array.from({ length: Board.DIMENSION }, () =>
+      Array.from({ length: Board.DIMENSION }, () => Color.NONE)
+    );
   }
 
   public isComplete(): boolean {
     let tokenCount = 0;
 
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
+      for (let j = 0; j < Board.DIMENSION; j++) {
         const tokenValue = this.tokens[i]![j];
-        const emptyTokenValue = '_';
+        const emptyTokenValue = Color.NONE;
 
         if (tokenValue !== emptyTokenValue) {
           tokenCount++;
@@ -31,11 +36,11 @@ class Board {
 
     console.log('┌───┬───┬───┐');
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
       let row = '|';
-      for (let j = 0; j < 3; j++) {
+      for (let j = 0; j < Board.DIMENSION; j++) {
         const value = this.tokens[i]![j]!;
-        const display = value === '_' ? counter.toString() : value;
+        const display = value === Color.NONE ? counter.toString() : value;
         row += ` ${display} |`;
         counter++;
       }
@@ -53,10 +58,10 @@ class Board {
   public isEmpty(position: number): boolean {
     let counter = 1;
 
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
+      for (let j = 0; j < Board.DIMENSION; j++) {
         const value = this.tokens[i]![j]!;
-        if (position === counter && value === '_') {
+        if (position === counter && value === Color.NONE) {
           return true;
         }
         counter++;
@@ -66,11 +71,11 @@ class Board {
     return false;
   }
 
-  public placeToken(color: string, position: number): void {
+  public placeToken(color: Color, position: number): void {
     let counter = 1;
 
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
+      for (let j = 0; j < Board.DIMENSION; j++) {
         if (position === counter) {
           this.tokens[i]![j]! = color;
         }
@@ -84,9 +89,9 @@ class Board {
   }
 
   private isHorizontal(): boolean {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
       const token = this.tokens[i]![0]!;
-      if (token !== '_' && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
+      if (token !== Color.NONE && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
         return true;
       }
     }
@@ -94,9 +99,9 @@ class Board {
   }
 
   private isVertical(): boolean {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
       const token = this.tokens[0]![i]!;
-      if (token !== '_' && token === this.tokens[1]![i]! && token === this.tokens[2]![i]!) {
+      if (token !== Color.NONE && token === this.tokens[1]![i]! && token === this.tokens[2]![i]!) {
         return true;
       }
     }
@@ -105,7 +110,7 @@ class Board {
 
   private isDiagonal(): boolean {
     const center = this.tokens[1]![1]!;
-    if (center !== '_' && center === this.tokens[0]![0]! && center === this.tokens[2]![2]!) {
+    if (center !== Color.NONE && center === this.tokens[0]![0]! && center === this.tokens[2]![2]!) {
       return true;
     }
 
@@ -114,34 +119,34 @@ class Board {
 
   private isInverse(): boolean {
     const center = this.tokens[1]![1]!;
-    if (center !== '_' && center === this.tokens[0]![2]! && center === this.tokens[2]![0]!) {
+    if (center !== Color.NONE && center === this.tokens[0]![2]! && center === this.tokens[2]![0]!) {
       return true;
     }
 
     return false;
   }
 
-  public getWinner(): string | null {
+  public getWinner(): Color | null {
     if (!this.isTicTacToe()) {
       return null;
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < Board.DIMENSION; i++) {
       const token = this.tokens[i]![0]!;
-      if (token !== '_' && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
+      if (token !== Color.NONE && token === this.tokens[i]![1]! && token === this.tokens[i]![2]!) {
         return token;
       }
     }
 
-    for (let j = 0; j < 3; j++) {
+    for (let j = 0; j < Board.DIMENSION; j++) {
       const token = this.tokens[0]![j]!;
-      if (token !== '_' && token === this.tokens[1]![j]! && token === this.tokens[2]![j]!) {
+      if (token !== Color.NONE && token === this.tokens[1]![j]! && token === this.tokens[2]![j]!) {
         return token;
       }
     }
 
     const center = this.tokens[1]![1]!;
-    if (center !== '_') {
+    if (center !== Color.NONE) {
       if (
         (center === this.tokens[0]![0]! && center === this.tokens[2]![2]!) ||
         (center === this.tokens[0]![2]! && center === this.tokens[2]![0]!)

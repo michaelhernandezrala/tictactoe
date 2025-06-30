@@ -1,11 +1,13 @@
 import { input } from '@inquirer/prompts';
+
 import Board from './Board';
+import Color from './Color';
 
 class Player {
-  private color: string;
+  private color: Color;
 
   public constructor(i: number) {
-    this.color = i === 0 ? 'x' : 'o';
+    this.color = i === 0 ? Color.XS : Color.OS;
   }
 
   public async put(board: Board): Promise<void> {
