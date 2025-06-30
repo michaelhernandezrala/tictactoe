@@ -1,15 +1,16 @@
 import Board from './Board';
 import Player from './Player';
+import Turn from './Turn';
 
 class TicTacToe {
   private board: Board;
-  private turn: number;
+  private turn: Turn;
   private players: Player[] = [];
-  private static readonly NUM_PLAYERS = 2;
+  public static readonly NUM_PLAYERS = 2;
 
   public constructor() {
     this.board = new Board();
-    this.turn = 0;
+    this.turn = new Turn();
     for (let i = 0; i < TicTacToe.NUM_PLAYERS; i++) {
       this.players[i] = new Player(i);
     }
@@ -18,8 +19,7 @@ class TicTacToe {
   public async play(): Promise<void> {
     do {
       this.board.write();
-      await this.players[this.turn]?.put(this.board);
-      this.turn = (this.turn + 1) % TicTacToe.NUM_PLAYERS;
+      await this.players[this.turn.take()]?.put(this.board);
     } while (!this.board.isTicTacToe() && !this.board.isComplete());
 
     this.board.write();
