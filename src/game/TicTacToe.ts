@@ -20,6 +20,7 @@ class TicTacToe {
     do {
       this.board.write();
       await this.players[this.turn.take()]?.put(this.board);
+      this.turn.change();
     } while (!this.board.isTicTacToe() && !this.board.isComplete());
 
     this.board.write();

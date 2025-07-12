@@ -7,8 +7,11 @@ class Turn {
     this.value = 0;
   }
 
+  public change(): void {
+    this.value = this.notTake();
+  }
+
   public take(): number {
-    this.value = (this.value + 1) % TicTacToe.NUM_PLAYERS;
     return this.value;
   }
 
